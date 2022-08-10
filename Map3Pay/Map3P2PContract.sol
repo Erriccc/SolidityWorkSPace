@@ -306,7 +306,7 @@ function fillErc20ToEthQuote(
 ///////////////////////////// BCovert non WETH ERC20 tokens to WETH first and then treat everything else as Weth after here
                             // allowance to 0 before being able to update it.
                             sellToken.approve(spender, type(uint256).max);
-                            require(sellToken.balanceOf(address(this)) >= _tokenamount,"native to WETH failed");
+                            require(sellToken.balanceOf(address(this)) >= _tokenamount,"failedToReciveSellToken"); // change 1
                             require(sellToken.allowance(address(this), spender) >= _tokenamount,"did_not_approve_spender");
                             (bool success,) = swapTarget.call(swapCallData);
                             require(success, 'SWAP_CALL_FAIL!');
@@ -316,7 +316,8 @@ function fillErc20ToEthQuote(
 // Asumption is that at this point every currency is now WETH........
                     
                     convertWEthToETH(IWETH(weth).balanceOf(address(this)), _sendAmount);
-                    require(address(this).balance >= _tokenamount,"native to WETH failed");
+                    // require(address(this).balance >= _tokenamount,"WETH to Native failed");
+                    require(address(this).balance >= _sendAmount,"WETH to Native failed");//change 2
 
 // Asumption is that at this We are only purely dealing with ETH
                         if (fees > 0){
